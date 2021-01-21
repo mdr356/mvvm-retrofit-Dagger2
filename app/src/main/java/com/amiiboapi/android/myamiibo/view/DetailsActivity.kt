@@ -25,7 +25,7 @@ class DetailsActivity : DaggerAppCompatActivity(){
         progressBar = findViewById(R.id.progressBar)
         progressBar.visibility = View.VISIBLE
 
-        amiiboDetailsViewModel.getAmiiboDetails("123")?.observe(this, Observer{
+        amiiboDetailsViewModel.getAmiiboDetails("123")?.observe(this, {
             progressBar.visibility = View.GONE
             Log.d("MainActivity", it.toString())
         })

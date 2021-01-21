@@ -1,6 +1,5 @@
 package com.amiiboapi.android.myamiibo.dagger.module;
 
-
 import com.amiiboapi.android.myamiibo.retrofit.RetrofitApi;
 import dagger.Module;
 import dagger.Provides;
@@ -20,7 +19,7 @@ public class RetrofitModule {
     @Provides
     Retrofit getRetrofit(OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
-                .baseUrl("https://www.amiiboapi.com/docs/#")
+                .baseUrl("https://www.amiiboapi.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build();

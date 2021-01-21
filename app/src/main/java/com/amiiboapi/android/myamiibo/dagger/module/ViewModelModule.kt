@@ -1,6 +1,5 @@
 package com.amiiboapi.android.myamiibo.dagger.module
 
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.amiiboapi.android.myamiibo.viewmodel.AmiiboDetailsViewModel

@@ -17,6 +17,7 @@ class AmiiboRepositoryImpl @Inject constructor(val retrofitApi: RetrofitApi) : A
 
     override fun getAmiiboList(): MutableLiveData<Amiibo> {
         val callAsync: Call<Amiibo> = retrofitApi.getAmiiboList()
+
         callAsync.enqueue(object : Callback<Amiibo> {
             override fun onResponse(call: Call<Amiibo>, response: Response<Amiibo>) {
                 val data = response.body()
