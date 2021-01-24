@@ -5,14 +5,188 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".view.DetailsActivity">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
+    <ImageView
+        android:id="@+id/amiibo_image_view"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/amiibo_image_view"
+        android:layout_marginTop="@dimen/top_margin">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/amiiboSeriesLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/top_margin">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:text="@string/amiibo_series"
+                    android:textColor="@color/light_grey"
+                    android:textSize="@dimen/text_title_size"/>
+
+                <TextView
+                    android:id="@+id/amiibo_series"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_subtitle_size"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/characterLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/amiiboSeriesLayout"
+                android:layout_marginTop="@dimen/top_margin">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:text="@string/character"
+                    android:textColor="@color/light_grey"
+                    android:textSize="@dimen/text_title_size"/>
+
+                <TextView
+                    android:id="@+id/amiibo_character"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_subtitle_size"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/gameSeriesLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/characterLayout"
+                android:layout_marginTop="@dimen/top_margin">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:text="@string/game_series"
+                    android:textColor="@color/light_grey"
+                    android:textSize="@dimen/text_title_size"/>
+
+                <TextView
+                    android:id="@+id/amiibo_game_series"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_subtitle_size"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/characterNameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/gameSeriesLayout"
+                android:layout_marginTop="@dimen/top_margin">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:text="@string/character_name"
+                    android:textColor="@color/light_grey"
+                    android:textSize="@dimen/text_title_size"/>
+
+                <TextView
+                    android:id="@+id/amiibo_character_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_subtitle_size"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/typeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/characterNameLayout"
+                android:layout_marginTop="@dimen/top_margin">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:text="@string/character_type"
+                    android:textColor="@color/light_grey"
+                    android:textSize="@dimen/text_title_size"/>
+
+                <TextView
+                    android:id="@+id/amiibo_character_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_subtitle_size"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/releaseLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/typeLayout"
+                android:layout_marginTop="@dimen/top_margin">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:text="@string/character_release"
+                    android:textColor="@color/light_grey"
+                    android:textSize="@dimen/text_title_size"/>
+
+                <TextView
+                    android:id="@+id/amiibo_character_release"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_subtitle_size"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

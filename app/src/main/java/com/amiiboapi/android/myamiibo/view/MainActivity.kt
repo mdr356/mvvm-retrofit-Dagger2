@@ -1,47 +1,45 @@
 package com.amiiboapi.android.myamiibo.view
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.LinearLayout
-import android.widget.ProgressBar
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.amiiboapi.android.myamiibo.BaseActivity
 import com.amiiboapi.android.myamiibo.R
+import com.amiiboapi.android.myamiibo.adapter.AmiiboClickListener
 import com.amiiboapi.android.myamiibo.adapter.AmiiboMainAdapter
+import com.amiiboapi.android.myamiibo.database.DataBaseHandler
 import com.amiiboapi.android.myamiibo.model.Amiibo
+import com.amiiboapi.android.myamiibo.model.AmiiboData
 import com.amiiboapi.android.myamiibo.viewmodel.AmiiboViewModel
-import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 
 
-class MainActivity : DaggerAppCompatActivity() {
+class MainActivity : BaseActivity(), AmiiboClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     lateinit var amiiboViewModel: AmiiboViewModel
 
-    private lateinit var progressBar : ProgressBar
-    private lateinit var errorScreen : LinearLayout
+    @Inject
+    lateinit var dataBaseHandler: DataBaseHandler
+
+    @Inject
+    lateinit var amiiboMainAdapter: AmiiboMainAdapter
+
     private lateinit var recyclerView: RecyclerView
-    private lateinit var amiiboMainAdapter: AmiiboMainAdapter
+    private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        initView()
-
-        amiiboViewModel.getAmiibo()?.observe(this, {
-            progressBar.visibility = View.GONE
-            when (it) {
-                null -> showErrorView()
-                else -> updateGridView(it)
-            }
-        })
+        setContentView(R.layout.content_main)
+        setTitle(R.string.title_amiibo)
+        initApiCall()
     }
 
-    private fun initView() {
+    override fun initView() {
         recyclerView = findViewById(R.id.recyclerView)
         val orientation = resources.configuration.orientation
 
@@ -53,20 +51,38 @@ class MainActivity : DaggerAppCompatActivity() {
             val gridLayoutManager = GridLayoutManager(this, 5)
             recyclerView.layoutManager = gridLayoutManager // set LayoutManager to RecyclerView
         }
-        amiiboMainAdapter = AmiiboMainAdapter()
-        recyclerView.adapter = amiiboMainAdapter
 
-        progressBar = findViewById(R.id.progressBar)
-        errorScreen = findViewById(R.id.error_screen)
+        amiiboMainAdapter.setListener(this)
+        recyclerView.adapter = amiiboMainAdapter
+        mSwipeRefreshLayout = findViewById(R.id.recycleViewContainer)
+        mSwipeRefreshLayout.setOnRefreshListener(this)
     }
+
+    override fun initApiCall() {
+        amiiboViewModel.getAmiibo()?.observe(this, {
+            dismissProgressBar()
+            when (it) {
+                null -> showErrorLayout()
+                else -> updateGridView(it)
+            }
+        })    }
 
     private fun updateGridView(data: Amiibo) {
         Log.d("MainActivity", data.toString())
-        errorScreen.visibility = View.GONE
+        dismissErrorLayout()
         amiiboMainAdapter.setList(data.amiibo)
     }
 
-    private fun showErrorView() {
-        errorScreen.visibility = View.VISIBLE
+    override fun onClickListener(amiiboData: AmiiboData) {
+        val intent = Intent(this, DetailsActivity::class.java)
+        intent.putExtra(DetailsActivity.AMIIBO_DATABASE_LOCAL_ID, amiiboData.id)
+        startActivity(intent)
+    }
+
+    override fun onRefresh() {
+        showProgressBar()
+        dismissErrorLayout()
+        dataBaseHandler.deleteAllData()
+        initApiCall()
     }
 }

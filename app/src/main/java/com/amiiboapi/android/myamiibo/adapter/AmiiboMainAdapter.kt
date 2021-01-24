@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso
 class AmiiboMainAdapter : RecyclerView.Adapter<AmiiboMainAdapter.ViewHolder>() {
 
     private var dataSet: List<AmiiboData>? = null
+    var amiiboClickListener: AmiiboClickListener? = null
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView
@@ -39,7 +40,11 @@ class AmiiboMainAdapter : RecyclerView.Adapter<AmiiboMainAdapter.ViewHolder>() {
         // contents of the view with that element
         viewHolder.name.text = dataSet?.get(position)?.name
         viewHolder.amiiboSeries.text = dataSet?.get(position)?.amiiboSeries
-        Picasso.get().load(dataSet?.get(position)?.image).into(viewHolder.image_view);
+        Picasso.get().load(dataSet?.get(position)?.image).into(viewHolder.image_view)
+
+        viewHolder.itemView.setOnClickListener {
+            dataSet?.let { it1 -> amiiboClickListener?.onClickListener(it1.get(this.getItemViewType(position))) }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -47,8 +52,15 @@ class AmiiboMainAdapter : RecyclerView.Adapter<AmiiboMainAdapter.ViewHolder>() {
         else return 0
     }
 
+    fun setListener(amiiboClickListener: AmiiboClickListener) {
+        this.amiiboClickListener = amiiboClickListener
+    }
     fun setList(amiibo: List<AmiiboData>) {
         this.dataSet = amiibo
         notifyDataSetChanged()
     }
+}
+
+interface AmiiboClickListener {
+    fun onClickListener(amiiboData: AmiiboData)
 }

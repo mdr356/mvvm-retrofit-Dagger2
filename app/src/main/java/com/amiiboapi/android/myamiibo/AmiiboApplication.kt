@@ -15,7 +15,7 @@ class AmiiboApplication :  Application(), HasAndroidInjector {
 
     override fun onCreate() {
         super.onCreate()
-        val mComponent: AppComponent? = DaggerAppComponent.builder().application(this)?.build()
+        val mComponent: AppComponent? = DaggerAppComponent.builder().application(this)?.context(this)?.build()
         mComponent?.inject(this)
     }
 

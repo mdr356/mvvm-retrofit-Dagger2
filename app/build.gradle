@@ -10,7 +10,7 @@ android {
 
   defaultConfig {
     applicationId "com.amiiboapi.android.myamiibo"
-    minSdkVersion 28
+    minSdkVersion 23
     targetSdkVersion 30
     versionCode 1
     versionName "1.0"
@@ -64,5 +64,9 @@ dependencies {
 
   //loading image with picasso
   implementation "com.squareup.picasso:picasso:2.71828"
+
+  //swipe to refresh
+  implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
 
 }

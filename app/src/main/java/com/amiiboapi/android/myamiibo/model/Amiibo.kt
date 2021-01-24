@@ -5,6 +5,7 @@ data class Amiibo(
 )
 
 data class AmiiboData(
+    val id: Int? = null,
     val amiiboSeries: String,
     val character: String,
     val gameSeries: String,
@@ -14,6 +15,7 @@ data class AmiiboData(
     val release : AmiiboRelease,
     val tail: String,
     val type: String,
+    val purchase: Int? = null
 )
 
 data class AmiiboRelease(

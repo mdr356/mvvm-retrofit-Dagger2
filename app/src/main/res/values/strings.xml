@@ -8,4 +8,11 @@
     <string name="previous">Previous</string>
 
     <string name="error_msg">Something happen, try again later.</string>
+    <string name="title_amiibo">AMIIBO APP</string>
+    <string name="amiibo_series">Series</string>
+    <string name="character">Character</string>
+    <string name="game_series">Game Series</string>
+    <string name="character_name">Name</string>
+    <string name="character_type">Type</string>
+    <string name="character_release">Release</string>
 </resources>

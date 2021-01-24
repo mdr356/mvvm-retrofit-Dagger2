@@ -1,8 +1,10 @@
 package com.amiiboapi.android.myamiibo.dagger.component
 
 import android.app.Application
+import android.content.Context
 import com.amiiboapi.android.myamiibo.AmiiboApplication
 import com.amiiboapi.android.myamiibo.dagger.module.ActivityModule
+import com.amiiboapi.android.myamiibo.dagger.module.AmiiboAdapterModule
 import com.amiiboapi.android.myamiibo.dagger.module.RepositoryModule
 import com.amiiboapi.android.myamiibo.dagger.module.RetrofitModule
 import com.amiiboapi.android.myamiibo.dagger.module.ViewModelModule
@@ -19,7 +21,9 @@ import javax.inject.Singleton
         ActivityModule::class,
         RetrofitModule::class,
         RepositoryModule::class,
-        ViewModelModule::class]
+        ViewModelModule::class,
+        AmiiboAdapterModule::class,
+    ]
 )
 interface AppComponent : AndroidInjector<AmiiboApplication?> {
     override fun inject(app: AmiiboApplication?)
@@ -28,6 +32,12 @@ interface AppComponent : AndroidInjector<AmiiboApplication?> {
     interface Builder {
         @BindsInstance
         fun application(application: Application?): Builder?
+
+        @BindsInstance
+        fun context(context: Context): Builder
+
         fun build(): AppComponent?
     }
 }
+
+

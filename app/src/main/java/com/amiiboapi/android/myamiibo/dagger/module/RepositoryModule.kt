@@ -1,5 +1,6 @@
 package com.amiiboapi.android.myamiibo.dagger.module
 
+import com.amiiboapi.android.myamiibo.database.DataBaseHandler
 import com.amiiboapi.android.myamiibo.retrofit.RetrofitApi
 import com.amiiboapi.android.myamiibo.repository.AmiiboDetailsRepository
 import com.amiiboapi.android.myamiibo.repository.AmiiboDetailsRepositoryImpl
@@ -12,8 +13,14 @@ import dagger.Provides
 class RepositoryModule {
 
     @Provides
-    fun provideAmiiboRepository(retrofitApi : RetrofitApi) : AmiiboRepository = AmiiboRepositoryImpl(retrofitApi)
+    fun provideAmiiboRepository(
+        retrofitApi : RetrofitApi,
+        dataBaseHandler: DataBaseHandler
+    ): AmiiboRepository = AmiiboRepositoryImpl(retrofitApi,
+        dataBaseHandler)
 
     @Provides
-    fun provideAmiiboDetailsRepository(retrofitApi: RetrofitApi) : AmiiboDetailsRepository = AmiiboDetailsRepositoryImpl(retrofitApi)
+    fun provideAmiiboDetailsRepository(
+        retrofitApi: RetrofitApi
+    ) : AmiiboDetailsRepository = AmiiboDetailsRepositoryImpl(retrofitApi)
 }
