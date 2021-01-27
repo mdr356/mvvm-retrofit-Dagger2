@@ -3,6 +3,7 @@ package com.amiiboapi.android.myamiibo.database
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import android.database.SQLException
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.database.sqlite.SQLiteOpenHelper
@@ -12,8 +13,10 @@ import com.amiiboapi.android.myamiibo.model.AmiiboRelease
 import com.google.gson.Gson
 import javax.inject.Inject
 
+
 class DataBaseHandler @Inject constructor(
-    var context: Context)
+    var context: Context
+)
     : SQLiteOpenHelper(context, DATABASENAME, null, 2) {
 
     companion object {
@@ -52,31 +55,38 @@ class DataBaseHandler @Inject constructor(
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {}
 
-    fun deleteAllData() {
+    fun deleteAllData() : Boolean {
         val db = this.writableDatabase
-        db!!.execSQL("DROP TABLE IF EXISTS $TABLENAME")
+        try {
+            db!!.execSQL("DROP TABLE IF EXISTS $TABLENAME")
+        } catch (e: SQLException) {
+            return false
+        }
+
         onCreate(db)
+
+        return true
     }
 
-    fun addAmiiboData(amiiboList: Amiibo) : Boolean {
+    fun addAmiiboData(amiiboList: Amiibo) {
         val database = this.writableDatabase
         val contentValues = ContentValues()
+        var rowId = 0
         for (data in amiiboList.amiibo) {
+            contentValues.put(COL_ID, rowId)
             contentValues.put(COL_AMIIBO_SERIES, data.amiiboSeries)
             contentValues.put(COL_CHARATER, data.character)
             contentValues.put(COL_GAME_SERIES, data.gameSeries)
             contentValues.put(COL_HEAD, data.head)
+            contentValues.put(COL_RELEASE, Gson().toJson(data.release))
             contentValues.put(COL_IMAGE_URI, data.image)
             contentValues.put(COL_NAME, data.name)
             contentValues.put(COL_TAIL, data.tail)
-            contentValues.put(COL_PURCHASE, data.purchase)
-            val result = database.insert(TABLENAME, null, contentValues)
-            return when(result) {
-                (0).toLong() -> false
-                else -> true
-            }
+            contentValues.put(COL_TYPE, data.type)
+            contentValues.put(COL_PURCHASE, "0")
+            database.insert(TABLENAME, null, contentValues)
+            rowId++
         }
-        return false
     }
 
     //method to read data
@@ -94,7 +104,6 @@ class DataBaseHandler @Inject constructor(
 
         //database is empty
         if(cursor.getCount() == 0) return null
-
 
         var id: Int
         var amiiboSeries : String
@@ -132,25 +141,98 @@ class DataBaseHandler @Inject constructor(
                     name = name,
                     tail = tail,
                     type = type,
-                    purchase = parseInt(purchase))
+                    purchase = parseInt(purchase)
+                )
                 empList.add(amiibo)
             } while (cursor.moveToNext())
         }
         return Amiibo(amiibo = empList)
     }
 
-    fun deleteEmployee(data: AmiiboData) {
+    fun deleteAmiiboData(id: Int) : Boolean {
         val db = this.writableDatabase
-        db.execSQL("DELETE FROM $TABLENAME WHERE $COL_ID=${data.id}")
+        try {
+            db.execSQL("DELETE FROM $TABLENAME WHERE $COL_ID=$id")
+        } catch (e: SQLException) {
+            return false
+        }
         db.close()
+
+        return true
     }
 
-    fun updatePurchase(data: AmiiboData) {
+    fun updatePurchase(id: Int): Boolean {
         val db = this.writableDatabase
-        db.execSQL("UPDATE $TABLENAME SET $COL_PURCHASE=1 WHERE id = ${data.id}", null)
+        try {
+            db.execSQL("UPDATE $TABLENAME SET $COL_PURCHASE=1 WHERE id = $id")
+        } catch (e: SQLException) {
+            return false
+        }
         db.close()
+
+        return true
     }
 
+    fun purchasedFilter(): Amiibo? {
+        val empList : ArrayList<AmiiboData> = ArrayList()
+        val selectQuery = "SELECT  * FROM $TABLENAME"
+        val db = this.readableDatabase
+        var cursor: Cursor? = null
+        try{
+            cursor = db.rawQuery(selectQuery, null)
+        }catch (e: SQLiteException) {
+            db.execSQL(selectQuery)
+            return null
+        }
+
+        //database is empty
+        if(cursor.getCount() == 0) return null
+
+        var id: Int
+        var amiiboSeries : String
+        var character : String
+        var gameSeries  : String
+        var head : String
+        var image : String
+        var name: String
+        var release : String
+        var tail : String
+        var type : String
+        var purchase : String
+
+        if (cursor.moveToFirst()) {
+            do {
+                id = cursor.getInt(cursor.getColumnIndex(COL_ID))
+                amiiboSeries = cursor.getString(cursor.getColumnIndex(COL_AMIIBO_SERIES))
+                character = cursor.getString(cursor.getColumnIndex(COL_CHARATER))
+                gameSeries = cursor.getString(cursor.getColumnIndex(COL_GAME_SERIES))
+                head = cursor.getString(cursor.getColumnIndex(COL_HEAD))
+                image = cursor.getString(cursor.getColumnIndex(COL_IMAGE_URI))
+                name = cursor.getString(cursor.getColumnIndex(COL_NAME))
+                release = cursor.getString(cursor.getColumnIndex(COL_RELEASE))
+                tail = cursor.getString(cursor.getColumnIndex(COL_TAIL))
+                type = cursor.getString(cursor.getColumnIndex(COL_TYPE))
+                purchase = cursor.getString(cursor.getColumnIndex(COL_PURCHASE))
+                if(purchase.equals("1")) {
+                    val amiibo = AmiiboData(
+                        id = id,
+                        amiiboSeries = amiiboSeries,
+                        character = character,
+                        gameSeries = gameSeries,
+                        head = head,
+                        image = image,
+                        release = processRelease(release),
+                        name = name,
+                        tail = tail,
+                        type = type,
+                        purchase = parseInt(purchase)
+                    )
+                    empList.add(amiibo)
+                }
+            } while (cursor.moveToNext())
+        }
+        return Amiibo(amiibo = empList)
+    }
 
     private fun processRelease(relaseData: String): AmiiboRelease {
         return Gson().fromJson(relaseData, AmiiboRelease::class.java)
@@ -206,7 +288,8 @@ class DataBaseHandler @Inject constructor(
             name = name,
             tail = tail,
             type = type,
-            purchase = parseInt(purchase))
+            purchase = parseInt(purchase)
+        )
 
         return amiibo
 

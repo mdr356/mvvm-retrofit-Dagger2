@@ -1,9 +1,12 @@
 package com.amiiboapi.android.myamiibo.adapter
 
+import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.amiiboapi.android.myamiibo.R
@@ -19,11 +22,13 @@ class AmiiboMainAdapter : RecyclerView.Adapter<AmiiboMainAdapter.ViewHolder>() {
         val name: TextView
         val amiiboSeries: TextView
         val image_view: ImageView
+        val amiiboLinearLayout: LinearLayout
         init {
             // Define click listener for the ViewHolder's View.
             name = view.findViewById(R.id.name)
             amiiboSeries = view.findViewById(R.id.amiiboSeries)
             image_view = view.findViewById(R.id.image)
+            amiiboLinearLayout = view.findViewById(R.id.amiibo_linear_layout)
         }
     }
 
@@ -42,8 +47,13 @@ class AmiiboMainAdapter : RecyclerView.Adapter<AmiiboMainAdapter.ViewHolder>() {
         viewHolder.amiiboSeries.text = dataSet?.get(position)?.amiiboSeries
         Picasso.get().load(dataSet?.get(position)?.image).into(viewHolder.image_view)
 
+        if (dataSet?.get(position)?.purchase == 1) {
+            viewHolder.amiiboLinearLayout.setBackgroundColor(Color.parseColor("#008000"))
+            Log.d("marc",("position of purchase: "+position))
+        }
+
         viewHolder.itemView.setOnClickListener {
-            dataSet?.let { it1 -> amiiboClickListener?.onClickListener(it1.get(this.getItemViewType(position))) }
+            dataSet?.get(position)?.let { it1 -> amiiboClickListener?.onClickListener(it1) }
         }
     }
 

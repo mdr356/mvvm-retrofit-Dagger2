@@ -19,8 +19,8 @@ data class AmiiboData(
 )
 
 data class AmiiboRelease(
-    val au: String,
-    val eu: String,
-    val jp: String,
-    val na: String,
+    val au: String?,
+    val eu: String?,
+    val jp: String?,
+    val na: String?,
 )

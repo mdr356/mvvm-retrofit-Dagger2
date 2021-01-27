@@ -1,7 +1,9 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="icon_size">200</dimen>
+    <dimen name="icon_size">200dp</dimen>
+    <dimen name="icon_size2">100dp</dimen>
     <dimen name="text_subtitle_size">16sp</dimen>
     <dimen name="text_title_size">16sp</dimen>
-    <dimen name="top_margin">10dp</dimen>
+    <dimen name="top_margin">5dp</dimen>
+    <dimen name="btn_margin">50dp</dimen>
 </resources>
